@@ -1,49 +1,58 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
-
-type Product = { id: number; name: string; message: string; price: number; image: string; tone: "Preto" | "Claro"; badge?: string };
-type CartItem = Product & { size: string; qty: number };
-
-const products: Product[] = [
-  { id: 1, name: "Jesus — O nome sobre todo nome", message: "Jesus no centro de tudo · Filipenses 2:9-11", price: 99.9, image: "/store/jesus-casal.png", tone: "Preto", badge: "Destaque" },
-  { id: 2, name: "Coroa de Espinhos", message: "Ele foi ferido por nossas transgressões · Isaías 53:5", price: 94.9, image: "/store/colecao-preta.png", tone: "Preto", badge: "Coleção" },
-  { id: 3, name: "Jesus — Filipenses 2:9", message: "O nome que está sobre todo nome", price: 94.9, image: "/store/jesus-cruz.png", tone: "Preto" },
-  { id: 4, name: "Negue-se — Lucas 9:23", message: "Tome cada dia a sua cruz e siga-me", price: 94.9, image: "/store/negue-se.png", tone: "Preto", badge: "Nova" },
-  { id: 5, name: "MVLA Essencial Bege", message: "Família, fé e propósito", price: 99.9, image: "/store/mvla-bege.png", tone: "Claro" },
-];
+import { useEffect, useMemo, useState } from "react";
+import { useStoreCart } from "./StoreCart";
+import { StoreProduct, defaultProducts } from "./store-data";
 
 const money = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export default function Store() {
+  const cart = useStoreCart();
+  const setCartOpen = cart.setOpen;
+  const [products, setProducts] = useState<StoreProduct[]>(defaultProducts);
   const [filter, setFilter] = useState("Todos");
-  const [chosen, setChosen] = useState<Product | null>(null);
+  const [chosen, setChosen] = useState<StoreProduct | null>(null);
   const [size, setSize] = useState("M");
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [open, setOpen] = useState(false);
+  const [color, setColor] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [previewColors, setPreviewColors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
-  const visible = useMemo(() => filter === "Todos" ? products : products.filter(p => p.tone === filter), [filter]);
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  function select(product: Product) { setChosen(product); setSize("M"); }
+  useEffect(() => { fetch("/api/products").then(response => response.json()).then(setProducts).catch(() => {}); }, []);
+  useEffect(() => { if (new URLSearchParams(window.location.search).get("cart") === "1") setCartOpen(true); }, [setCartOpen]);
+
+  const visible = useMemo(() => products.filter(product => {
+    if (filter === "Todos") return true;
+    if (filter === "Preto") return product.colors.some(item => item.name === "Preto");
+    return product.colors.some(item => item.name !== "Preto");
+  }), [filter, products]);
+  const currentColor = chosen?.colors.find(item => item.name === color) || chosen?.colors[0];
+
+  function select(product: StoreProduct, initialColor?: string) {
+    setChosen(product);
+    setSize(product.sizes.includes("M") ? "M" : product.sizes[0]);
+    setColor(initialColor || product.colors[0]?.name || "");
+    setQuantity(1);
+  }
   function add() {
-    if (!chosen) return;
-    setCart(current => {
-      const found = current.find(i => i.id === chosen.id && i.size === size);
-      return found ? current.map(i => i === found ? { ...i, qty: i.qty + 1 } : i) : [...current, { ...chosen, size, qty: 1 }];
-    });
+    if (!chosen || !currentColor) return;
+    cart.add({ productId: chosen.id, name: chosen.name, price: chosen.price, image: currentColor.image, color: currentColor.name, size }, quantity);
     setChosen(null);
-    setOpen(true);
   }
 
   return <section className="store store-page">
-    <div className="store-intro shell"><p className="eyebrow gold">MATHEUS VIDAL · LAIS · ANTONELLA</p><div><h1>Loja MVLA de camisetas cristãs.</h1><p>Moda cristã para vestir fé, família e propósito. Conheça peças com tecidos confortáveis e estampas bíblicas exclusivas.</p></div></div>
-    <div className="store-benefits shell"><span>◇ <b>Tecidos premium</b><small>Conforto para todos os dias</small></span><span>♧ <b>Estampas exclusivas</b><small>Mensagens que transformam</small></span><span>♡ <b>Fé e propósito</b><small>Identidade em cada detalhe</small></span><span>＋ <b>Compra demonstrativa</b><small>Experimente o fluxo completo</small></span></div>
-    <div className="store-catalog shell"><header><div><p className="eyebrow gold">COLEÇÃO CRISTÃ MVLA</p><h2>Escolha a mensagem que você quer vestir.</h2></div><div className="store-filters">{["Todos", "Preto", "Claro"].map(f => <button className={filter === f ? "active" : ""} onClick={() => setFilter(f)} key={f}>{f}</button>)}<button className="cart-button" onClick={() => setOpen(true)}>Sacola <b>{cart.reduce((n, i) => n + i.qty, 0)}</b></button></div></header>
-      <div className="product-grid">{visible.map(product => <article className="product-card" key={product.id}>{product.badge && <span className="product-badge">{product.badge}</span>}<button className="product-photo" onClick={() => select(product)} aria-label={`Ver ${product.name}`}><Image src={product.image} fill sizes="(max-width: 560px) 100vw, (max-width: 850px) 50vw, 33vw" alt={`Camiseta cristã ${product.name}`} /></button><div><small>CAMISETA · ALGODÃO PREMIUM</small><h3>{product.name}</h3><p>{money(product.price)} <span>ou 3x sem juros</span></p><button onClick={() => select(product)}>Ver produto e tamanhos →</button></div></article>)}</div>
+    <div className="store-intro shell"><p className="eyebrow gold">MATHEUS VIDAL · LAIS · ANTONELLA</p><div><h1>Loja MVLA de camisetas cristãs.</h1><p>Moda cristã com acabamento premium, peças para diferentes estilos e uma mensagem que permanece muito além da roupa.</p></div></div>
+    <div className="store-benefits shell"><span>◇ <b>Tecidos premium</b><small>Conforto para todos os dias</small></span><span>♧ <b>Estampas exclusivas</b><small>Mensagens que transformam</small></span><span>♡ <b>Escolha sua cor</b><small>Veja a peça antes de comprar</small></span><span>＋ <b>Sacola inteligente</b><small>Quantidade e variações salvas</small></span></div>
+    <div className="store-catalog shell"><header><div><p className="eyebrow gold">COLEÇÃO CRISTÃ MVLA</p><h2>Escolha a mensagem que você quer vestir.</h2></div><div className="store-filters">{["Todos", "Preto", "Claros"].map(item => <button className={filter === item ? "active" : ""} onClick={() => setFilter(item)} key={item}>{item}</button>)}<button className="cart-button" onClick={() => cart.setOpen(true)}>Sacola <b>{cart.count}</b></button></div></header>
+      <div className="product-grid">{visible.map(product => {
+        const preview = product.colors.find(item => item.name === previewColors[product.id]) || product.colors[0];
+        return <article className="product-card" key={product.id}>{product.badge && <span className="product-badge">{product.badge}</span>}<button className="product-photo" onClick={() => select(product, preview?.name)} aria-label={`Ver ${product.name}`}><Image src={preview?.image || "/store/jesus-casal.png"} fill sizes="(max-width: 560px) 100vw, (max-width: 850px) 50vw, 33vw" alt={`Camiseta cristã ${product.name} na cor ${preview?.name}`} /></button><div><small>{product.category.toUpperCase()} · ALGODÃO PREMIUM</small><h3>{product.name}</h3><div className="card-swatches" aria-label="Cores disponíveis">{product.colors.map(item => <button key={item.name} className={preview?.name === item.name ? "active" : ""} style={{ "--swatch": item.hex } as React.CSSProperties} onClick={() => setPreviewColors(current => ({ ...current, [product.id]: item.name }))} aria-label={`Mostrar cor ${item.name}`} title={item.name} />)}<span>{product.colors.length} {product.colors.length === 1 ? "cor" : "cores"}</span></div><p>{money(product.price)} <span>ou 3x sem juros</span></p><button onClick={() => select(product, preview?.name)}>Ver produto e opções →</button></div></article>;
+      })}</div>
     </div>
-    {chosen && <div className="modal-backdrop" onMouseDown={() => setChosen(null)}><div className="product-modal" onMouseDown={e => e.stopPropagation()}><button className="close" onClick={() => setChosen(null)} aria-label="Fechar">×</button><div className="modal-product-photo"><Image src={chosen.image} fill sizes="(max-width: 850px) 100vw, 50vw" alt={`Detalhes da camiseta ${chosen.name}`} /></div><div><p className="eyebrow gold">CAMISETA MVLA · EDIÇÃO ESPECIAL</p><h2>{chosen.name}</h2><strong>{money(chosen.price)}</strong><p>{chosen.message}. Malha confortável e estampa exclusiva para expressar sua fé.</p><label>Tamanho<div className="size-picker">{["P", "M", "G", "GG"].map(s => <button className={size === s ? "active" : ""} onClick={() => setSize(s)} key={s}>{s}</button>)}</div></label><button className="store-primary" onClick={add}>Adicionar à sacola</button></div></div></div>}
-    {open && <div className="cart-overlay" onMouseDown={() => setOpen(false)}><aside className="cart-drawer" onMouseDown={e => e.stopPropagation()}><header><div><small>SUA SACOLA</small><h2>{cart.length ? `${cart.reduce((n, i) => n + i.qty, 0)} peça(s)` : "Está vazia"}</h2></div><button onClick={() => setOpen(false)} aria-label="Fechar sacola">×</button></header>{success ? <div className="cart-success"><span>✓</span><h3>Pedido simulado com sucesso!</h3><p>Nenhuma cobrança foi realizada. A experiência já está pronta para receber um meio de pagamento real.</p><button onClick={() => { setSuccess(false); setCart([]); setOpen(false); }}>Concluir</button></div> : <><div className="cart-items">{cart.map((item, index) => <article key={`${item.id}-${item.size}`}><div className="cart-thumb"><Image src={item.image} fill sizes="75px" alt="" /></div><div><b>{item.name}</b><small>Tamanho {item.size}</small><span>{money(item.price)} · Qtd. {item.qty}</span></div><button onClick={() => setCart(cart.filter((_, i) => i !== index))}>Remover</button></article>)}</div><footer className="cart-total"><span>Subtotal <b>{money(total)}</b></span><small>Frete calculado na próxima etapa.</small><button disabled={!cart.length} onClick={() => setSuccess(true)}>Finalizar compra simulada</button></footer></>}</aside></div>}
+
+    {chosen && currentColor && <div className="modal-backdrop"><div className="product-modal" role="dialog" aria-modal="true" aria-label="Opções do produto"><button className="close" onClick={() => setChosen(null)} aria-label="Fechar">×</button><div className="modal-product-photo"><Image src={currentColor.image} fill sizes="(max-width: 850px) 100vw, 55vw" alt={`${chosen.name} na cor ${currentColor.name}`} /></div><div className="product-options"><p className="eyebrow gold">CAMISETA MVLA · EDIÇÃO ESPECIAL</p><h2>{chosen.name}</h2><strong>{money(chosen.price)}</strong><p>{chosen.message}. Malha confortável e estampa exclusiva para expressar sua fé.</p><fieldset className="color-picker"><legend>Cor: <b>{currentColor.name}</b></legend><div>{chosen.colors.map(item => <button key={item.name} className={color === item.name ? "active" : ""} onClick={() => setColor(item.name)} aria-label={`Selecionar cor ${item.name}`}><span style={{ background: item.hex }} /><small>{item.name}</small></button>)}</div></fieldset><fieldset><legend>Tamanho: <b>{size}</b></legend><div className="size-picker">{chosen.sizes.map(item => <button className={size === item ? "active" : ""} onClick={() => setSize(item)} key={item}>{item}</button>)}</div></fieldset><div className="purchase-controls"><label>Quantidade<div className="quantity-picker"><button onClick={() => setQuantity(value => Math.max(1, value - 1))} aria-label="Diminuir quantidade">−</button><output>{quantity}</output><button onClick={() => setQuantity(value => Math.min(20, value + 1))} aria-label="Aumentar quantidade">＋</button></div></label><div><small>Total</small><strong>{money(chosen.price * quantity)}</strong></div></div><button className="store-primary" onClick={add}>Adicionar {quantity} {quantity === 1 ? "peça" : "peças"} à sacola</button></div></div></div>}
+
+    {cart.open && <div className="cart-overlay"><aside className="cart-drawer" role="dialog" aria-modal="true" aria-label="Sacola de compras"><header><div><small>SUA SACOLA</small><h2>{cart.count ? `${cart.count} ${cart.count === 1 ? "peça" : "peças"}` : "Está vazia"}</h2></div><button onClick={() => cart.setOpen(false)} aria-label="Fechar sacola">×</button></header>{success ? <div className="cart-success"><span>✓</span><h3>Pedido simulado com sucesso!</h3><p>Nenhuma cobrança foi realizada. A experiência já está pronta para receber um pagamento real.</p><button onClick={() => { setSuccess(false); cart.clear(); cart.setOpen(false); }}>Concluir</button></div> : <>{cart.items.length ? <div className="cart-items">{cart.items.map(item => <article key={item.key}><div className="cart-thumb"><Image src={item.image} fill sizes="80px" alt={`${item.name} ${item.color}`} /></div><div><b>{item.name}</b><small>{item.color} · Tamanho {item.size}</small><span>{money(item.price)}</span><div className="cart-quantity"><button onClick={() => cart.updateQuantity(item.key, item.qty - 1)} aria-label={`Diminuir ${item.name}`}>−</button><output>{item.qty}</output><button onClick={() => cart.updateQuantity(item.key, item.qty + 1)} aria-label={`Aumentar ${item.name}`}>＋</button></div></div><button onClick={() => cart.remove(item.key)}>Remover</button></article>)}</div> : <div className="empty-cart"><span>▱</span><h3>Sua sacola está esperando.</h3><p>Escolha uma peça, uma cor e o tamanho ideal.</p><button onClick={() => cart.setOpen(false)}>Continuar comprando</button></div>}<footer className="cart-total"><span>Subtotal <b>{money(cart.total)}</b></span><small>Frete calculado na próxima etapa.</small><button disabled={!cart.items.length} onClick={() => setSuccess(true)}>Finalizar compra simulada</button></footer></>}</aside></div>}
   </section>;
 }
