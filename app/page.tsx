@@ -1,6 +1,6 @@
 import SiteCommerce from "./SiteCommerce";
 import Store from "./Store";
-const platformUrl="http://localhost:3001";
+const platformUrl="https://cursos-matheus-vidal.vercel.app";
 export default function Home(){return <main className="institutional">
 <header className="nav shell"><a className="brand" href="#inicio"><span className="brand-mark">MV</span><span>MATHEUS VIDAL</span></a><nav><a href="#inicio">Início</a><a href="#sobre">Sobre</a><a href="#livros">Livros</a><a href="#loja">Loja</a><a href="#cursos">Cursos</a></nav><a className="login" href="#contato">Entrar em contato <span>↓</span></a></header>
 <section id="inicio" className="person-hero shell"><div className="orbit"/><div className="orbit orbit-two"/><div className="person-copy"><p className="eyebrow"><span/> PREGADOR · AUTOR · PALESTRANTE</p><h1>Uma mensagem<br/>que <em>transforma.</em></h1><p>Fé, conhecimento e caminhos práticos para pessoas que desejam crescer com propósito e fazer a diferença.</p><div className="actions"><a className="primary" href="#sobre">Conheça minha história <span>↓</span></a><a className="text-link" href="#contato">Agendar uma conversa <span>↓</span></a></div></div><div className="person-photo"><div className="orange-halo"/><img src="/autor-principal.png" alt="Matheus Vidal, pregador, autor e palestrante"/><p>PROPÓSITO <span>→</span> MOVIMENTO</p></div></section>
