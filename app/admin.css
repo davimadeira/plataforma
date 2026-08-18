@@ -1,7 +1,7 @@
 .site-admin-page{min-height:100vh;background:#ece7de;color:#17130f}
 .site-admin-page:has(.admin-login){display:grid;place-items:center;padding:32px;background:radial-gradient(circle at 80% 10%,#d8c4a8 0,transparent 34%),#e9e4dc}
 .admin-login{width:min(450px,100%);min-height:auto;display:flex;flex-direction:column;align-items:stretch;background:#fff;padding:46px;border:1px solid #ded6ca;box-shadow:0 30px 80px rgba(75,59,38,.14)}
-.admin-login img{display:block;object-fit:contain;margin:0 auto 25px}
+.admin-login img{display:block;object-fit:contain;margin:0 auto 25px;background:#111;padding:10px;border:1px solid #32291e}
 .admin-login>p,.admin-topbar p,.products-admin>header p,.admin-section-title small{margin:0;color:#a1743d;font:700 9px var(--font-mono);letter-spacing:.16em}
 .admin-login h1{font:500 39px/1.05 var(--font-serif);letter-spacing:-.04em;margin:10px 0 12px}
 .admin-login>span{color:#6d665d;line-height:1.6;margin-bottom:28px}

@@ -6,7 +6,7 @@ const platformUrl = "https://cursos-matheus-vidal.vercel.app";
 export default function SiteFooter() {
   return <footer><div className="shell">
     <Link className="brand official-brand" href="/" aria-label="Página inicial de Matheus Vidal">
-      <Image src="/logo-mvla-redrawn.png" width={52} height={52} alt="Marca MVLA" />
+      <Image src="/logo-mv-contrast.png" width={52} height={52} alt="Marca MV" />
       <span>MATHEUS VIDAL</span>
     </Link>
     <p>Fé, propósito e mensagens que transformam.</p>

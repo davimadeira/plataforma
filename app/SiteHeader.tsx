@@ -17,7 +17,7 @@ export default function SiteHeader({ active = "inicio" }: { active?: "inicio" | 
   }
   return <header className="site-header-wrap"><div className="nav shell site-header">
     <Link className="brand official-brand" href="/" aria-label="Ir para a página inicial de Matheus Vidal">
-      <Image src="/logo-mvla-redrawn.png" width={64} height={64} alt="Marca MVLA — Matheus Vidal, Lais e Antonella" priority />
+      <Image src="/logo-mv-contrast.png" width={64} height={64} alt="Marca MV — Matheus Vidal, Lais e Antonella" priority />
       <span><b>MATHEUS VIDAL</b><small>FÉ · PROPÓSITO · MOVIMENTO</small></span>
     </Link>
     <nav aria-label="Navegação principal">
