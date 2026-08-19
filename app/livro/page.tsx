@@ -4,10 +4,44 @@ import SiteFooter from "../SiteFooter";
 import SiteHeader from "../SiteHeader";
 import WhatsAppContact from "../WhatsAppContact";
 
-export const metadata: Metadata = { title: "Livro de Matheus Vidal | Fé, propósito e transformação", description: "Conheça o livro de Matheus Vidal, leia os destaques da obra e simule sua compra online.", alternates: { canonical: "/livro" }, openGraph: { title: "Livro de Matheus Vidal", description: "Uma leitura cristã para transformar fé em movimento.", url: "/livro" } };
+export const metadata: Metadata = {
+  title: "Livro cristão | Fé e propósito",
+  description: "Conheça o livro de Matheus Vidal, com reflexões bíblicas para fortalecer a fé, aproximar o coração de Deus e viver com propósito.",
+  alternates: { canonical: "/livro" },
+  openGraph: {
+    title: "Livro de Matheus Vidal | Fé e propósito",
+    description: "Uma leitura cristã com reflexões bíblicas para fortalecer a caminhada com Deus.",
+    url: "/livro",
+    type: "book"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Livro de Matheus Vidal | Fé e propósito",
+    description: "Reflexões bíblicas para fortalecer a caminhada com Deus."
+  }
+};
 
 export default function BookPage() {
-  const schema = { "@context": "https://schema.org", "@type": "Book", name: "Livro de Matheus Vidal", author: { "@type": "Person", name: "Matheus Vidal" }, inLanguage: "pt-BR", offers: { "@type": "Offer", priceCurrency: "BRL", price: "49.90", availability: "https://schema.org/InStock" } };
-  return <main className="institutional inner-page"><SiteHeader active="livro" /><section className="inner-hero shell"><p className="eyebrow orange">LIVRO · MATHEUS VIDAL</p><h1>Livro de Matheus Vidal: fé para viver com propósito.</h1><p>Uma leitura cristã criada para levar a mensagem além do momento e transformar reflexão em atitude.</p></section><BookPurchase /><WhatsAppContact /><SiteFooter /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} /></main>;
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Book",
+        "@id": "https://plataforma-theta-seven.vercel.app/livro#book",
+        name: "Livro de Matheus Vidal",
+        url: "https://plataforma-theta-seven.vercel.app/livro",
+        author: { "@id": "https://plataforma-theta-seven.vercel.app/#matheus-vidal" },
+        inLanguage: "pt-BR",
+        description: "Reflexões bíblicas para fortalecer a fé e viver o propósito de Deus."
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Início", item: "https://plataforma-theta-seven.vercel.app" },
+          { "@type": "ListItem", position: 2, name: "Livro", item: "https://plataforma-theta-seven.vercel.app/livro" }
+        ]
+      }
+    ]
+  };
+  return <main className="institutional inner-page"><SiteHeader active="livro" /><section className="inner-hero shell"><p className="eyebrow orange">LIVRO · MATHEUS VIDAL</p><h1>Uma leitura para fortalecer a fé e viver com propósito.</h1><p>Em seu livro, Matheus Vidal compartilha reflexões bíblicas para aproximar o coração de Deus e levar a Palavra às decisões de cada dia.</p></section><BookPurchase /><WhatsAppContact /><SiteFooter /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} /></main>;
 }
-

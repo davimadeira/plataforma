@@ -9,7 +9,7 @@ export default function SiteFooter() {
       <Image src="/logo-mv-contrast.png" width={52} height={52} alt="Marca MV" />
       <span>MATHEUS VIDAL</span>
     </Link>
-    <p>Fé, propósito e mensagens que transformam.</p>
+    <p>Fé, Palavra e propósito para cada dia.</p>
     <div><Link href="/livro">Livro</Link><Link href="/loja">Loja</Link><a href={platformUrl}>Cursos</a></div>
   </div></footer>;
 }

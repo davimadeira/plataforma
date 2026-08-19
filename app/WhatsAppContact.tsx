@@ -15,11 +15,11 @@ export default function WhatsAppContact() {
   useEffect(() => {
     fetch("/api/settings").then(r => r.json()).then(data => setNumber(normalizeBrazilianNumber(data.whatsapp))).catch(() => {});
   }, []);
-  const message = encodeURIComponent("Olá! Conheci o trabalho do Matheus Vidal pelo site e gostaria de informações para agendar uma pregação, palestra ou evento.");
+  const message = encodeURIComponent("Olá! Conheci o ministério de Matheus Vidal pelo site e gostaria de informações para convidá-lo a ministrar em nossa igreja ou evento.");
   const url = `https://wa.me/${normalizeBrazilianNumber(number)}?text=${message}`;
   return <>
     <section id="contato" className="whatsapp-section shell">
-      <div><p className="eyebrow"><span /> AGENDA E CONVITES</p><h2>Leve a mensagem de Matheus Vidal para o seu <em>evento.</em></h2><p>Pregações, palestras, treinamentos e projetos especiais. Consulte a agenda e a disponibilidade diretamente pelo WhatsApp.</p></div>
+      <div><p className="eyebrow"><span /> AGENDA E CONVITES</p><h2>Convide Matheus Vidal para ministrar em sua <em>igreja ou evento.</em></h2><p>Pregações, congressos, cultos e encontros cristãos. Consulte a agenda e a disponibilidade diretamente pelo WhatsApp.</p></div>
       <a className="whatsapp-card" href={url} target="_blank" rel="noreferrer">
         <span className="wa-icon" aria-hidden="true">◔</span><div><small>ATENDIMENTO DIRETO</small><b>Conversar no WhatsApp</b><p>A conversa já abre com uma mensagem pronta</p></div><span>↗</span>
       </a>
@@ -27,4 +27,3 @@ export default function WhatsAppContact() {
     <a className="floating-whatsapp" href={url} target="_blank" rel="noreferrer" aria-label="Falar com Matheus Vidal no WhatsApp"><span>◔</span><small>Fale comigo</small></a>
   </>;
 }
-
