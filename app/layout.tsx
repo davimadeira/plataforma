@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreCartProvider } from "./StoreCart";
@@ -36,4 +37,4 @@ export const metadata: Metadata = {
     images: ["/autor-principal.png"]
   }
 };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="pt-BR"><body className={`${geist.variable} ${mono.variable}`}><StoreCartProvider>{children}</StoreCartProvider></body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="pt-BR"><body className={`${geist.variable} ${mono.variable}`}><Auth0Provider><StoreCartProvider>{children}</StoreCartProvider></Auth0Provider></body></html>; }
