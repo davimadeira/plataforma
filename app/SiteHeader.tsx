@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useStoreCart } from "./StoreCart";
+import SiteThemeToggle from "./SiteThemeToggle";
 
 const platformUrl = "https://cursos-matheus-vidal.vercel.app";
 
@@ -29,6 +30,6 @@ export default function SiteHeader({ active = "inicio" }: { active?: "inicio" | 
       <Link className={active === "loja" ? "active" : ""} href="/loja">Loja</Link>
       <a href={platformUrl}>Cursos</a>
     </nav>
-    <div className="header-actions"><button className="header-cart" onClick={openCart} aria-label={`Abrir sacola com ${cart.count} itens`}><span aria-hidden="true">▱</span><small>Sacola</small><b>{cart.count}</b></button><Link className="account-access" href={user ? "/minha-conta" : "/entrar"} aria-label={user ? "Abrir minha conta" : "Entrar na minha conta"}><span aria-hidden="true">{user ? "✓" : "○"}</span><small>{isLoading ? "Conta" : user ? "Minha conta" : "Entrar"}</small></Link><Link className="login" href="/#contato">Fale comigo <span>↗</span></Link></div>
+    <div className="header-actions"><button className="header-cart" onClick={openCart} aria-label={`Abrir sacola com ${cart.count} itens`}><span aria-hidden="true">▱</span><small>Sacola</small><b>{cart.count}</b></button><Link className="account-access" href={user ? "/minha-conta" : "/entrar"} aria-label={user ? "Abrir minha conta" : "Entrar na minha conta"}><span aria-hidden="true">{user ? "✓" : "○"}</span><small>{isLoading ? "Conta" : user ? "Minha conta" : "Entrar"}</small></Link><SiteThemeToggle /><Link className="login" href="/#contato">Fale comigo <span>↗</span></Link></div>
   </div></header>;
 }
