@@ -10,7 +10,6 @@
 .header-cart:hover{border-color:#b98b4f;background:#191611;transform:translateY(-1px)}
 .header-cart svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7}
 .header-cart b{display:grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:#b98b4f;color:#0c0a08;font:800 10px var(--font-mono)}
-.person-hero,.about-person,.store-teaser,.book-showcase{content-visibility:auto;contain-intrinsic-size:700px}
 .store-teaser .store-product,.book-card{box-shadow:0 28px 80px rgba(0,0,0,.18)}
 @media(max-width:1000px){.header-cart span{display:none}.site-header .login{display:none}.nav nav{gap:22px}}
 @media(max-width:850px){.official-brand>span{display:none}.header-actions{gap:6px}.header-cart{padding:0 12px}}
