@@ -192,7 +192,7 @@ export default function SchoolEditor() {
       name: "Novo curso",
       subtitle: "Uma apresentação breve do curso.",
       description: "Descreva a transformação e o conteúdo deste curso.",
-      price: "0,00",
+      price: "",
       category: "FORMAÇÃO",
       accent: "#bb8850",
       modules: [],
@@ -594,6 +594,7 @@ export default function SchoolEditor() {
                         setCourse({ price: event.target.value })
                       }
                     />
+                    {!course.price.trim() || /^0(?:[,.]0+)?$/.test(course.price.trim()) ? <small className="school-price-warning">Defina um valor acima de R$ 0,00 para liberar o Pix deste curso.</small> : null}
                   </label>
                   <label>
                     Cor de destaque

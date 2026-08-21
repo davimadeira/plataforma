@@ -2,5 +2,6 @@
 .school-lesson-row{grid-template-columns:28px minmax(0,1fr) 150px auto 26px}
 .school-free-preview{border:1px solid #d5c5b0;background:#fffdf9;color:#5c4933;border-radius:7px;padding:8px 9px;font-size:9px;font-weight:800;white-space:nowrap}
 .school-free-preview.active{background:#edf5e9;border-color:#92b483;color:#41643a}
+.school-price-warning{display:block;margin-top:7px;color:#a15d22;font-size:10px;line-height:1.4}
 @media(max-width:1050px){.school-lesson-row{grid-template-columns:28px minmax(0,1fr) 28px}.school-free-preview{grid-column:2;width:max-content}}
 @media(max-width:760px){.school-lesson-row{grid-template-columns:25px minmax(0,1fr) 24px}.school-free-preview{grid-column:2}}
